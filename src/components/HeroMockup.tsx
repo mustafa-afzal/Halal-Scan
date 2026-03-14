@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { ShieldCheck, AlertTriangle, ScanLine, CircleCheck } from "lucide-react";
 import DisplayCards from "@/components/ui/display-cards";
+import { ease } from "@/lib/motion";
 
 const halalCheckCards = [
   {
@@ -36,46 +37,61 @@ const halalCheckCards = [
 
 export default function HeroMockup() {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 40 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.5, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-      className="relative"
-    >
-      {/* Ambient glow behind the cards */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-        <div className="w-[400px] h-[250px] bg-blue-400/[0.07] rounded-full blur-[100px] glow-pulse" />
-      </div>
+    <div className="relative">
+      {/* Ambient glow — fades in slowly */}
+      <motion.div
+        className="absolute inset-0 flex items-center justify-center pointer-events-none"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.6, duration: 1.2 }}
+      >
+        <div className="w-[450px] h-[280px] bg-blue-400/[0.06] rounded-full blur-[100px] glow-pulse" />
+        <div className="absolute w-[200px] h-[200px] bg-indigo-300/[0.04] rounded-full blur-[80px] translate-x-32 -translate-y-8 glow-pulse-delayed" />
+      </motion.div>
 
-      <div className="relative flex items-center justify-center min-h-[380px] sm:min-h-[420px]">
+      {/* Main cards composition */}
+      <motion.div
+        className="relative flex items-center justify-center min-h-[380px] sm:min-h-[420px]"
+        initial={{ opacity: 0, y: 40, scale: 0.97 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ delay: 0.4, duration: 0.9, ease }}
+      >
         <DisplayCards cards={halalCheckCards} />
 
-        {/* Floating status chip — top right */}
+        {/* Floating chip — top right: verified count */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 1.2, duration: 0.4 }}
+          initial={{ opacity: 0, y: 12, scale: 0.9 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ delay: 1.1, duration: 0.5, ease }}
           className="float-fast absolute top-4 right-[5%] sm:right-[12%] z-30"
         >
-          <div className="flex items-center gap-2 rounded-full border border-slate-200 bg-white/90 backdrop-blur-sm px-3 py-1.5 shadow-[0_1px_4px_rgba(0,0,0,0.04)]">
+          <motion.div
+            className="flex items-center gap-2 rounded-full border border-slate-200 bg-white/90 backdrop-blur-sm px-3 py-1.5 shadow-[0_1px_4px_rgba(0,0,0,0.04)]"
+            whileHover={{ scale: 1.04, boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}
+            transition={{ duration: 0.15 }}
+          >
             <ShieldCheck className="size-3.5 text-emerald-500" />
             <span className="text-[11px] font-medium text-slate-600">8 of 12 verified</span>
-          </div>
+          </motion.div>
         </motion.div>
 
-        {/* Floating status chip — bottom left */}
+        {/* Floating chip — bottom left: flagged count */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 1.4, duration: 0.4 }}
+          initial={{ opacity: 0, y: 12, scale: 0.9 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ delay: 1.3, duration: 0.5, ease }}
           className="float-slow absolute bottom-8 left-[2%] sm:left-[8%] z-30"
         >
-          <div className="flex items-center gap-2 rounded-full border border-slate-200 bg-white/90 backdrop-blur-sm px-3 py-1.5 shadow-[0_1px_4px_rgba(0,0,0,0.04)]">
+          <motion.div
+            className="flex items-center gap-2 rounded-full border border-slate-200 bg-white/90 backdrop-blur-sm px-3 py-1.5 shadow-[0_1px_4px_rgba(0,0,0,0.04)]"
+            whileHover={{ scale: 1.04, boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}
+            transition={{ duration: 0.15 }}
+          >
             <AlertTriangle className="size-3.5 text-amber-500" />
             <span className="text-[11px] font-medium text-slate-600">2 flagged ingredients</span>
-          </div>
+          </motion.div>
         </motion.div>
-      </div>
-    </motion.div>
+      </motion.div>
+    </div>
   );
 }
