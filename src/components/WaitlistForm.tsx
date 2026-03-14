@@ -3,6 +3,7 @@
 import { useState, type FormEvent } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { ease, buttonSpring } from "@/lib/motion";
 
 interface WaitlistFormProps {
   className?: string;
@@ -41,32 +42,48 @@ export default function WaitlistForm({ className = "", variant = "default" }: Wa
         {status === "success" ? (
           <motion.div
             key="success"
-            initial={{ opacity: 0, y: 6, scale: 0.98 }}
+            initial={{ opacity: 0, y: 6, scale: 0.97 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 0.35 }}
+            transition={{ duration: 0.4, ease }}
             className={cn(
               "flex items-center justify-center gap-3 rounded-xl border bg-emerald-50 border-emerald-200",
               isHero ? "px-6 py-5" : "px-5 py-4"
             )}
           >
-            <svg width="16" height="16" viewBox="0 0 20 20" fill="none" className="shrink-0 text-emerald-600">
+            <motion.svg
+              width="16" height="16" viewBox="0 0 20 20" fill="none"
+              className="shrink-0 text-emerald-600"
+              initial={{ scale: 0, rotate: -90 }}
+              animate={{ scale: 1, rotate: 0 }}
+              transition={{ delay: 0.15, ...buttonSpring }}
+            >
               <path d="M16.667 5L7.5 14.167 3.333 10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
+            </motion.svg>
             <p className={cn("font-medium text-emerald-700", isHero ? "text-[15px]" : "text-sm")}>
               You&apos;re on the list. We&apos;ll be in touch.
             </p>
           </motion.div>
         ) : (
-          <motion.div key="form" exit={{ opacity: 0, y: -6 }} transition={{ duration: 0.15 }}>
+          <motion.div
+            key="form"
+            exit={{ opacity: 0, y: -6, transition: { duration: 0.15 } }}
+          >
             <form onSubmit={handleSubmit} noValidate>
-              <div className={cn(
-                "flex items-center gap-2 rounded-xl border bg-white transition-all duration-200",
-                isHero
-                  ? "p-1.5 shadow-[0_0_0_1px_rgba(0,0,0,0.04),0_2px_8px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.03)]"
-                  : "p-1.5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]",
-                status === "error" ? "border-red-300" : "border-slate-200/80",
-                "focus-within:border-blue-300 focus-within:shadow-[0_0_0_3px_rgba(59,130,246,0.08)]"
-              )}>
+              <motion.div
+                className={cn(
+                  "flex items-center gap-2 rounded-xl border bg-white transition-all duration-200",
+                  isHero
+                    ? "p-1.5 shadow-[0_0_0_1px_rgba(0,0,0,0.04),0_2px_8px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.03)]"
+                    : "p-1.5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]",
+                  status === "error" ? "border-red-300" : "border-slate-200/80",
+                  "focus-within:border-blue-300 focus-within:shadow-[0_0_0_3px_rgba(59,130,246,0.08)]"
+                )}
+                whileHover={{ boxShadow: isHero
+                  ? "0 0 0 1px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.06), 0 12px 32px rgba(0,0,0,0.04)"
+                  : "0 2px 6px rgba(0,0,0,0.06)"
+                }}
+                transition={{ duration: 0.2 }}
+              >
                 <label htmlFor={isHero ? "hero-email" : "footer-email"} className="sr-only">
                   Email address
                 </label>
@@ -91,9 +108,13 @@ export default function WaitlistForm({ className = "", variant = "default" }: Wa
                 <motion.button
                   type="submit"
                   disabled={status === "loading"}
-                  whileTap={{ scale: 0.96 }}
+                  whileTap={{ scale: 0.95 }}
+                  whileHover={{ scale: 1.01 }}
+                  transition={buttonSpring}
                   className={cn(
-                    "shrink-0 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer",
+                    "shrink-0 rounded-lg bg-blue-600 text-white font-medium transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer",
+                    "hover:bg-blue-700 hover:shadow-[0_2px_8px_rgba(59,130,246,0.25)]",
+                    "active:bg-blue-800",
                     isHero ? "h-11 px-6 text-[14px]" : "h-10 px-5 text-[13px]"
                   )}
                 >
@@ -109,15 +130,16 @@ export default function WaitlistForm({ className = "", variant = "default" }: Wa
                     "Join the waitlist"
                   )}
                 </motion.button>
-              </div>
+              </motion.div>
             </form>
 
             <AnimatePresence>
               {status === "error" && (
                 <motion.p
-                  initial={{ opacity: 0, y: -4 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0 }}
+                  initial={{ opacity: 0, y: -4, height: 0 }}
+                  animate={{ opacity: 1, y: 0, height: "auto" }}
+                  exit={{ opacity: 0, y: -4, height: 0 }}
+                  transition={{ duration: 0.2, ease }}
                   id="waitlist-error"
                   className="mt-2 text-[13px] text-red-500"
                   role="alert"
